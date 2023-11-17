@@ -42,4 +42,5 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> searchItem(String request) {
         return itemDao.searchItem(request);
     }
+
 }
