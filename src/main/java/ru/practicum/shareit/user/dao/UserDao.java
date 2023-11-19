@@ -1,23 +1,18 @@
 package ru.practicum.shareit.user.dao;
 
-
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
-import java.util.Map;
 
 public interface UserDao {
 
-    UserDto addUser(User user);
+    User getUserById(int userid);
 
-    List<UserDto> getAllUsers();
+    List<User> getAllUsers();
 
-    UserDto getUserDtoById(int userId);
+    User addUser(User user);
 
-    User getUserById(int userId);
+    User updateUser(User user, int userId);
 
-    UserDto removeUserById(int userId);
-
-    UserDto updateUser(int userId, Map<Object, Object> fields);
+    void removeUserById(User user);
 }

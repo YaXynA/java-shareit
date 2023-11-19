@@ -1,44 +1,68 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.user.service.UserServiceImpl;
+
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
 
 
+@Slf4j
+@Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserServiceImpl userService;
+    private final UserMapper mapper;
 
     @PostMapping
-    public UserDto addUser(@Valid @RequestBody User user) {
-        return userService.addUser(user);
+    public UserDto addUser(@RequestBody @Valid UserDto userDto) {
+
+        User user = mapper.returnUser(userDto);
+        userService.addUser(user);
+        log.info("Add User {} ", user.getId());
+        return mapper.returnUserDto(user);
+    }
+
+    @PatchMapping("/{userId}")
+    public UserDto updateUser(@RequestBody UserDto userDto, @PathVariable Integer userId) {
+
+        User user = mapper.returnUser(userDto);
+        User newUser = userService.updateUser(user, userId);
+        log.info("Update User {} ", newUser.getId());
+        return mapper.returnUserDto(newUser);
+    }
+
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable Integer userId) {
+
+        log.info("User {} deleted ", userId);
+        userService.removeUserById(userId);
+    }
+
+    @GetMapping("/{userId}")
+    public UserDto getUser(@PathVariable Integer userId) {
+
+        log.info("Get User {} ", userId);
+        return mapper.returnUserDto(userService.getUserById(userId));
     }
 
     @GetMapping
     public List<UserDto> getAllUsers() {
-        return userService.getAllUsers();
-    }
 
-    @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable(name = "id") int userId) {
-        return userService.getUserDtoById(userId);
-    }
-
-    @DeleteMapping("/{id}")
-    public UserDto removeUserById(@PathVariable(name = "id") int userId) {
-        return userService.removeUserById(userId);
-    }
-
-    @PatchMapping("/{id}")
-    public UserDto updateUser(@PathVariable int id, @RequestBody Map<Object, Object> fields) {
-        return userService.updateUser(id, fields);
+        log.info("List all Users");
+        return userService.getAllUsers()
+                .stream()
+                .map(mapper::returnUserDto)
+                .collect(toList());
     }
 }

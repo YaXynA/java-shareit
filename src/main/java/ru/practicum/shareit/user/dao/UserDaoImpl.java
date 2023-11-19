@@ -1,99 +1,82 @@
 package ru.practicum.shareit.user.dao;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ReflectionUtils;
 import ru.practicum.shareit.exception.EmailDuplicateException;
 import ru.practicum.shareit.exception.NoDataFoundException;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserMapper;
-import ru.practicum.shareit.user.dto.UserDto;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
-@Slf4j
 public class UserDaoImpl implements UserDao {
-    private final Map<Integer, User> userMap = new HashMap<>();
-    private int count = 0;
-    @Autowired
-    private UserMapper userMapper;
 
-    @Override
-    public UserDto addUser(User user) {
-        checkEmailForDuplicate(user.getEmail());
-        user.setId(++count);
-        UserDto userDto = userMapper.toUserDto(user);
-        userMap.putIfAbsent(user.getId(), user);
-        return userDto;
-    }
+    private static int newId = 1;
 
-    @Override
-    public List<UserDto> getAllUsers() {
-        List<UserDto> userDtoList = new ArrayList<>();
-        for (User user : userMap.values()) {
-            userDtoList.add(userMapper.toUserDto(user));
-        }
-        return userDtoList;
-    }
+    private final HashMap<Integer, User> userMap = new HashMap<>();
 
     @Override
     public User getUserById(int userId) {
+
         if (userMap.containsKey(userId)) {
             return userMap.get(userId);
         } else {
-            throw new NoDataFoundException("Пользователь с id:" + userId + " не найден.");
+            throw new NoDataFoundException( "User id " + userId + " not found.");
         }
     }
 
     @Override
-    public UserDto getUserDtoById(int userId) {
-        if (userMap.containsKey(userId)) {
-            return userMapper.toUserDto(userMap.get(userId));
-        } else {
-            throw new NoDataFoundException("Пользователь с id:" + userId + " не найден.");
-        }
+    public List<User> getAllUsers() {
+        return new ArrayList<>(userMap.values());
     }
 
     @Override
-    public UserDto removeUserById(int userId) {
-        if (userMap.containsKey(userId)) {
-            return userMapper.toUserDto(userMap.remove(userId));
-        } else {
-            throw new NoDataFoundException("Пользователь с id:" + userId + " не найден.");
-        }
-    }
+    public User addUser(User user) {
 
-    @Override
-    public UserDto updateUser(int userId, Map<Object, Object> fields) {
-        if (userMap.containsKey(userId)) {
-            User user = getUserById(userId);
-            fields.forEach((key, value) -> {
-                Field field = ReflectionUtils.findField(User.class, (String) key);
-                if (((String) key).equalsIgnoreCase("email") && !user.getEmail()
-                        .equalsIgnoreCase((String) value)) {
-                    checkEmailForDuplicate((String) value);
-                }
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, user, value);
-            });
-            return userMapper.toUserDto(user);
-        } else {
-            throw new NoDataFoundException("Пользователь с id:" + userId + " не найден.");
-        }
-    }
-
-    private void checkEmailForDuplicate(String email) {
-        List<UserDto> userDtoList = getAllUsers();
-        for (UserDto userDto : userDtoList) {
-            if (userDto.getEmail().equalsIgnoreCase(email)) {
-                throw new EmailDuplicateException("Email: " + email + " уже существует");
+        for (User userCheckEmail : getAllUsers()) {
+            if (userCheckEmail.getEmail().equals(user.getEmail())) {
+                throw new EmailDuplicateException("there is already a user with an email " + user.getEmail());
             }
         }
+
+        if (user.getId() == 0) {
+            user.setId(newId++);
+        }
+
+        userMap.put(user.getId(), user);
+        return user;
+    }
+
+    @Override
+    public User updateUser(User user, int userId) {
+
+        User newUser = userMap.get(userId);
+
+        if (user.getName() != null) {
+            newUser.setName(user.getName());
+        }
+        if (user.getEmail() != null) {
+            for (User userCheckEmail : getAllUsers()) {
+                if (userCheckEmail.getEmail().equals(user.getEmail()) && userCheckEmail.getId() != userId) {
+                    throw new EmailDuplicateException("there is already a user with an email " + user.getEmail());
+                }
+            }
+
+            newUser.setEmail(user.getEmail());
+        }
+
+        userMap.put(userId, newUser);
+        return userMap.get(user.getId());
+    }
+
+    @Override
+    public void removeUserById(User user) {
+
+        if (!userMap.containsValue(user)) {
+            throw new NoDataFoundException("User id " + user.getId() + " not found.");
+        }
+
+        userMap.remove(user.getId());
     }
 }

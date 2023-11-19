@@ -1,45 +1,57 @@
 package ru.practicum.shareit.item.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NoDataFoundException;
 import ru.practicum.shareit.item.dao.ItemDao;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserDao;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-    @Autowired
-    private ItemDao itemDao;
-    @Autowired
-    private UserDao userDao;
+
+    private final ItemDao itemDao;
+    private final UserDao userDao;
 
     @Override
-    public ItemDto addItem(int userId, Item item) {
+    public Item addItem(int userId, Item item) {
+
         userDao.getUserById(userId);
-        return itemDao.addItem(userId, item);
+        item.setOwner(userId);
+        return itemDao.addItem(item);
     }
 
     @Override
-    public ItemDto updateItem(int userId, int itemId, Map<Object, Object> fields) {
-        return itemDao.updateItem(userId, itemId, fields);
+    public Item updateItem(Item item, int itemId, int userId) {
+
+        userDao.getUserById(userId);
+        itemDao.getItemById(itemId);
+
+        item.setId(itemId);
+        item.setOwner(userId);
+
+        if (!getAllItemForOwner(userId).contains(item)) {
+            throw new NoDataFoundException("the item was not found with the user id " + userId);
+        }
+
+        return itemDao.updateItem(userId, item);
     }
 
     @Override
-    public ItemDto getItemDtoById(int itemId) {
-        return itemDao.getItemDtoById(itemId);
+    public Item getItemById(int itemId) {
+        return itemDao.getItemById(itemId);
     }
 
     @Override
-    public List<ItemDto> getAllItemForOwner(int ownerId) {
+    public List<Item> getAllItemForOwner(int ownerId) {
         return itemDao.getAllItemForOwner(ownerId);
     }
 
     @Override
-    public List<ItemDto> searchItem(String request) {
+    public List<Item> searchItem(String request) {
         return itemDao.searchItem(request);
     }
 

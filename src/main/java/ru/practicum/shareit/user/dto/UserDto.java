@@ -1,25 +1,21 @@
 package ru.practicum.shareit.user.dto;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data
-@Accessors(chain = true)
-@EqualsAndHashCode
-@ToString
-@Component
+@Builder
 public class UserDto {
 
     private int id;
-    @NotBlank(message = "Name - не может быть пустым.")
+
+    @NotBlank(message = "Login cannot be empty or contain spaces.")
     private String name;
-    @NotBlank(message = "Email - не может быть пустым.")
-    @Email(message = "Не правильный формат email")
+
+    @NotBlank(message = "Email cannot be empty")
+    @Email(message = "Email must contain the character @")
     private String email;
 }

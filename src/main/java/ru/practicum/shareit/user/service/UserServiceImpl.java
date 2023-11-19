@@ -1,43 +1,43 @@
 package ru.practicum.shareit.user.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dao.UserDao;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserDao userDao;
+    UserDao repository;
 
     @Override
-
-    public UserDto addUser(User user) {
-        return userDao.addUser(user);
+    public User addUser(User user) {
+        return repository.addUser(user);
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        return userDao.getAllUsers();
+    public User updateUser(User user, int userId) {
+
+        repository.getUserById(userId);
+        user.setId(userId);
+        return repository.updateUser(user, userId);
     }
 
     @Override
-    public UserDto getUserDtoById(int userId) {
-        return userDao.getUserDtoById(userId);
+    public void removeUserById(int userId) {
+        repository.removeUserById(repository.getUserById(userId));
     }
 
     @Override
-    public UserDto removeUserById(int userId) {
-        return userDao.removeUserById(userId);
+    public User getUserById(int userId) {
+        return repository.getUserById(userId);
     }
 
     @Override
-    public UserDto updateUser(int userId, Map<Object, Object> fields) {
-        return userDao.updateUser(userId, fields);
+    public List<User> getAllUsers() {
+        return repository.getAllUsers();
     }
 }
