@@ -22,7 +22,7 @@ public class UserDaoImpl implements UserDao {
         if (userMap.containsKey(userId)) {
             return userMap.get(userId);
         } else {
-            throw new NoDataFoundException( "User id " + userId + " not found.");
+            throw new NoDataFoundException("User id " + userId + " not found.");
         }
     }
 
