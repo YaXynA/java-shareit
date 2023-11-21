@@ -72,9 +72,7 @@ public class ItemDaoImpl implements ItemDao {
         List<Item> list = items.get(userId);
         list.remove(item);
         list.add(newItem);
-
         allItems.put(item.getId(), newItem);
-
         return mapper.returnItemDto(newItem);
     }
 
