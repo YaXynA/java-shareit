@@ -33,7 +33,9 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public List<Item> getAll() {
+
         return new ArrayList<>(allItems.values());
+
     }
 
     @Override
