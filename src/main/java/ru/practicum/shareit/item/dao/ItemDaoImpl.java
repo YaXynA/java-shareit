@@ -88,8 +88,6 @@ public class ItemDaoImpl implements ItemDao {
     @Override
     public List<Item> searchItem(String text) {
 
-        Set<Item> set = new HashSet<>();
-
         if (text.equals("")) {
             return Collections.emptyList();
         } else {
