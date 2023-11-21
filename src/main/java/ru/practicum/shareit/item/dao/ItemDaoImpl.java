@@ -1,19 +1,26 @@
 package ru.practicum.shareit.item.dao;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.NoDataFoundException;
+import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Component
 public class ItemDaoImpl implements ItemDao {
 
-    private static int newId = 1;
+    private int newId = 1;
 
     private final HashMap<Integer, List<Item>> items = new HashMap<>();
 
     private final HashMap<Integer, Item> allItems = new HashMap<>();
+
+    private final ItemMapper mapper;
 
     @Override
     public Item getItemById(int itemId) {
@@ -30,14 +37,11 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
-    public Item addItem(Item item) {
-
+    public ItemDto addItem(Item item) {
         if (item.getId() == 0) {
             item.setId(newId++);
         }
-
         allItems.put(item.getId(), item);
-
         items.compute(item.getOwner(), (userId, userItems) -> {
             if (userItems == null) {
                 userItems = new ArrayList<>();
@@ -45,12 +49,11 @@ public class ItemDaoImpl implements ItemDao {
             userItems.add(item);
             return userItems;
         });
-
-        return item;
+        return mapper.returnItemDto(item);
     }
 
     @Override
-    public Item updateItem(int userId, Item item) {
+    public ItemDto updateItem(int userId, Item item) {
 
         Item newItem = allItems.get(item.getId());
 
@@ -72,14 +75,13 @@ public class ItemDaoImpl implements ItemDao {
 
         allItems.put(item.getId(), newItem);
 
-        return newItem;
+        return mapper.returnItemDto(newItem);
     }
 
 
 
     @Override
     public List<Item> getAllItemForOwner(int userId) {
-
         return items.getOrDefault(userId, Collections.emptyList());
     }
 
@@ -91,20 +93,12 @@ public class ItemDaoImpl implements ItemDao {
         if (text.equals("")) {
             return Collections.emptyList();
         } else {
-            for (Item item : getAll()) {
-                if (item.getName().toLowerCase().contains(text.toLowerCase())) {
-                    if (item.getAvailable()) {
-                        set.add(item);
-                    }
-                }
-                if (item.getDescription().toLowerCase().contains(text.toLowerCase())) {
-                    if (item.getAvailable()) {
-                        set.add(item);
-                    }
-                }
-            }
+            final String searchText = text.toLowerCase(Locale.ENGLISH);
+            return allItems.values()
+                    .stream()
+                    .filter(i -> i.getAvailable()
+                            && (i.getName().toLowerCase(Locale.ENGLISH).contains(searchText)
+                            || i.getDescription().toLowerCase(Locale.ENGLISH).contains(searchText))).collect(Collectors.toList());
         }
-
-        return new ArrayList<>(set);
     }
 }

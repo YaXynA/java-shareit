@@ -1,20 +1,27 @@
 package ru.practicum.shareit.user.dao;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.EmailDuplicateException;
 import ru.practicum.shareit.exception.NoDataFoundException;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Repository
 public class UserDaoImpl implements UserDao {
 
-    private static int newId = 1;
+    private int newId = 1;
 
     private final HashMap<Integer, User> userMap = new HashMap<>();
+
+    private final UserMapper mapper;
 
     @Override
     public User getUserById(int userId) {
@@ -27,47 +34,43 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return new ArrayList<>(userMap.values());
+    public List<UserDto> getAllUsers() {
+        return new ArrayList<>(userMap.values())
+                .stream()
+                .map(mapper::returnUserDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public User addUser(User user) {
-
-        for (User userCheckEmail : getAllUsers()) {
+    public UserDto addUser(User user) {
+        for (User userCheckEmail : userMap.values()) {
             if (userCheckEmail.getEmail().equals(user.getEmail())) {
                 throw new EmailDuplicateException("there is already a user with an email " + user.getEmail());
             }
         }
-
         if (user.getId() == 0) {
             user.setId(newId++);
         }
-
         userMap.put(user.getId(), user);
-        return user;
+        return mapper.returnUserDto(user);
     }
 
     @Override
-    public User updateUser(User user, int userId) {
-
+    public UserDto updateUser(User user, int userId) {
         User newUser = userMap.get(userId);
-
         if (user.getName() != null) {
             newUser.setName(user.getName());
         }
         if (user.getEmail() != null) {
-            for (User userCheckEmail : getAllUsers()) {
+            for (User userCheckEmail : userMap.values()) {
                 if (userCheckEmail.getEmail().equals(user.getEmail()) && userCheckEmail.getId() != userId) {
                     throw new EmailDuplicateException("there is already a user with an email " + user.getEmail());
                 }
             }
-
             newUser.setEmail(user.getEmail());
         }
-
         userMap.put(userId, newUser);
-        return userMap.get(user.getId());
+        return mapper.returnUserDto(userMap.get(user.getId()));
     }
 
     @Override

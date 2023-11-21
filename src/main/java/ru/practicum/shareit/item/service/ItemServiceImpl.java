@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NoDataFoundException;
 import ru.practicum.shareit.item.dao.ItemDao;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserDao;
 
@@ -17,7 +18,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserDao userDao;
 
     @Override
-    public Item addItem(int userId, Item item) {
+    public ItemDto addItem(int userId, Item item) {
 
         userDao.getUserById(userId);
         item.setOwner(userId);
@@ -25,7 +26,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item updateItem(Item item, int itemId, int userId) {
+    public ItemDto updateItem(Item item, int itemId, int userId) {
 
         userDao.getUserById(userId);
         itemDao.getItemById(itemId);

@@ -25,36 +25,35 @@ public class ItemController {
 
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") int userId,
-                       @RequestBody @Valid ItemDto itemDto) {
-
-        Item item = mapper.returnItem(itemDto);
-        itemService.addItem(userId, item);
+                           @RequestBody @Valid Item item) {
         log.info("User {}, add new item {}", userId, item.getName());
-        return mapper.returnItemDto(item);
+        return itemService.addItem(userId, item);
     }
 
     @GetMapping("/{id}")
     public Item getItemById(@PathVariable(name = "id") int itemId) {
+        log.info("You search item by id {} ", itemId);
         return itemService.getItemById(itemId);
     }
 
     @GetMapping
     public List<Item> getAllItemForOwner(@RequestHeader("X-Sharer-User-Id") int userId) {
+        log.info("You search all items for userId {} ", userId);
         return itemService.getAllItemForOwner(userId);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") int userId,
-                              @RequestBody ItemDto itemDto,
+                              @RequestBody Item item,
                               @PathVariable Integer itemId) {
+        log.info("User {},update itemId {} , item {}", userId,itemId, item.getName());
+        return itemService.updateItem(item, itemId, userId);
 
-        Item item = mapper.returnItem(itemDto);
-        Item updateItem = itemService.updateItem(item, itemId, userId);
-        return mapper.returnItemDto(updateItem);
     }
 
     @GetMapping("/search")
     public List<Item> searchItem(@RequestParam(name = "text") String request) {
+        log.info("You search item by {} ", request);
         return itemService.searchItem(request);
     }
 }

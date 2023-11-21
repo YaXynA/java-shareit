@@ -11,8 +11,6 @@ import ru.practicum.shareit.user.service.UserServiceImpl;
 import javax.validation.Valid;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 
 @Slf4j
 @Validated
@@ -22,47 +20,34 @@ import static java.util.stream.Collectors.toList;
 public class UserController {
 
     private final UserServiceImpl userService;
-    private final UserMapper mapper;
 
     @PostMapping
-    public UserDto addUser(@RequestBody @Valid UserDto userDto) {
-
-        User user = mapper.returnUser(userDto);
-        userService.addUser(user);
-        log.info("Add User {} ", user.getId());
-        return mapper.returnUserDto(user);
+    public UserDto addUser(@RequestBody @Valid User user) {
+        log.info("You add User {} id ", user.getId());
+        return userService.addUser(user);
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@RequestBody UserDto userDto, @PathVariable Integer userId) {
-
-        User user = mapper.returnUser(userDto);
-        User newUser = userService.updateUser(user, userId);
-        log.info("Update User {} ", newUser.getId());
-        return mapper.returnUserDto(newUser);
+    public UserDto updateUser(@RequestBody User user, @PathVariable Integer userId) {
+        log.info("User {} updated ", userId);
+        return userService.updateUser(user, userId);
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable Integer userId) {
-
         log.info("User {} deleted ", userId);
         userService.removeUserById(userId);
     }
 
     @GetMapping("/{userId}")
-    public UserDto getUser(@PathVariable Integer userId) {
-
+    public User getUser(@PathVariable Integer userId) {
         log.info("Get User {} ", userId);
-        return mapper.returnUserDto(userService.getUserById(userId));
+        return userService.getUserById(userId);
     }
 
     @GetMapping
     public List<UserDto> getAllUsers() {
-
         log.info("List all Users");
-        return userService.getAllUsers()
-                .stream()
-                .map(mapper::returnUserDto)
-                .collect(toList());
+        return userService.getAllUsers();
     }
 }

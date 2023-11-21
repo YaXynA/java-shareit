@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dao.UserDao;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 
@@ -11,15 +12,15 @@ import java.util.List;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    UserDao repository;
+    private final UserDao repository;
 
     @Override
-    public User addUser(User user) {
+    public UserDto addUser(User user) {
         return repository.addUser(user);
     }
 
     @Override
-    public User updateUser(User user, int userId) {
+    public UserDto updateUser(User user, int userId) {
 
         repository.getUserById(userId);
         user.setId(userId);
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return repository.getAllUsers();
     }
 }
