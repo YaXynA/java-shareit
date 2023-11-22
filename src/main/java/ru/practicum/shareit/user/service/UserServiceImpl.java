@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(int userId) {
+    public UserDto getUserById(int userId) {
         return repository.getUserById(userId);
     }
 

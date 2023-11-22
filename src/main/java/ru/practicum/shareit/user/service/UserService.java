@@ -13,7 +13,7 @@ public interface UserService {
 
     void removeUserById(int userId);
 
-    User getUserById(int userId);
+    UserDto getUserById(int userId);
 
     List<UserDto> getAllUsers();
 }

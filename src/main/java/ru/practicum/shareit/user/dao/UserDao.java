@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserDao {
 
-    User getUserById(int userid);
+    UserDto getUserById(int userid);
 
     List<UserDto> getAllUsers();
 
@@ -15,5 +15,5 @@ public interface UserDao {
 
     UserDto updateUser(User user, int userId);
 
-    void removeUserById(User user);
+    void removeUserById(UserDto userDto);
 }

@@ -24,10 +24,10 @@ public class UserDaoImpl implements UserDao {
     private final UserMapper mapper;
 
     @Override
-    public User getUserById(int userId) {
-
+    public UserDto getUserById(int userId) {
         if (userMap.containsKey(userId)) {
-            return userMap.get(userId);
+            User user = userMap.get(userId);
+            return mapper.returnUserDto(user);
         } else {
             throw new NoDataFoundException("User id " + userId + " not found.");
         }
@@ -74,12 +74,11 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void removeUserById(User user) {
-
-        if (!userMap.containsValue(user)) {
-            throw new NoDataFoundException("User id " + user.getId() + " not found.");
+    public void removeUserById(UserDto userDto) {
+        int userId = userDto.getId();
+        if (!userMap.containsKey(userId)) {
+            throw new NoDataFoundException("User id " + userId + " not found.");
         }
-
-        userMap.remove(user.getId());
+        userMap.remove(userId);
     }
 }
