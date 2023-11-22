@@ -23,9 +23,9 @@ public class ItemDaoImpl implements ItemDao {
     private final ItemMapper mapper;
 
     @Override
-    public Item getItemById(int itemId) {
+    public ItemDto getItemById(int itemId) {
         if (allItems.containsKey(itemId)) {
-            return allItems.get(itemId);
+            return mapper.returnItemDto(allItems.get(itemId));
         } else {
             throw new NoDataFoundException("Item с id: " + itemId + " не найдена.");
         }
@@ -81,13 +81,15 @@ public class ItemDaoImpl implements ItemDao {
 
 
     @Override
-    public List<Item> getAllItemForOwner(int userId) {
-        return items.getOrDefault(userId, Collections.emptyList());
+    public List<ItemDto> getAllItemForOwner(int userId) {
+        List<Item> itemList = items.getOrDefault(userId, Collections.emptyList());
+        return itemList.stream()
+                .map(mapper::returnItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Item> searchItem(String text) {
-
+    public List<ItemDto> searchItem(String text) {
         if (text.equals("")) {
             return Collections.emptyList();
         } else {
@@ -96,7 +98,9 @@ public class ItemDaoImpl implements ItemDao {
                     .stream()
                     .filter(i -> i.getAvailable()
                             && (i.getName().toLowerCase(Locale.ENGLISH).contains(searchText)
-                            || i.getDescription().toLowerCase(Locale.ENGLISH).contains(searchText))).collect(Collectors.toList());
+                            || i.getDescription().toLowerCase(Locale.ENGLISH).contains(searchText)))
+                    .map(mapper::returnItemDto)
+                    .collect(Collectors.toList());
         }
     }
 }

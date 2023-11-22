@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public interface ItemDao {
-    Item getItemById(int itemId);
+    ItemDto getItemById(int itemId);
 
     List<Item> getAll();
 
@@ -15,7 +15,7 @@ public interface ItemDao {
 
     ItemDto updateItem(int userId, Item item);
 
-    List<Item> getAllItemForOwner(int userId);
+    List<ItemDto> getAllItemForOwner(int userId);
 
-    List<Item> searchItem(String text);
+    List<ItemDto> searchItem(String text);
 }
