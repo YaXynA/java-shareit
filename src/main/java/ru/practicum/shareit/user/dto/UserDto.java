@@ -1,21 +1,18 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data
 @Builder
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class User {
+public class UserDto {
 
-    @EqualsAndHashCode.Include
     private int id;
 
-    @NotBlank(message = "Name cannot be empty or contain spaces.")
+    @NotBlank(message = "Login cannot be empty or contain spaces.")
     private String name;
 
     @NotBlank(message = "Email cannot be empty")
