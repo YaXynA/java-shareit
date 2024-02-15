@@ -1,24 +1,22 @@
 package ru.practicum.shareit.user;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import javax.persistence.*;
 
 @Data
-@Builder
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "users")
 public class User {
-
-    @EqualsAndHashCode.Include
-    private int id;
-
-    @NotBlank(message = "Name cannot be empty or contain spaces.")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "name", nullable = false)
     private String name;
-
-    @NotBlank(message = "Email cannot be empty")
-    @Email(message = "Email must contain the character @")
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 }

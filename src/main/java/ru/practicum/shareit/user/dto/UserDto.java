@@ -1,21 +1,21 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import ru.practicum.shareit.user.markers.Create;
+import ru.practicum.shareit.user.markers.Update;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data
-@Builder
+@AllArgsConstructor
 public class UserDto {
 
-    private int id;
-
-    @NotBlank(message = "Login cannot be empty or contain spaces.")
+    private Long id;
+    @NotBlank(groups = {Create.class})
     private String name;
-
-    @NotBlank(message = "Email cannot be empty")
-    @Email(message = "Email must contain the character @")
+    @Email(groups = {Create.class, Update.class})
+    @NotBlank(groups = {Create.class})
     private String email;
 }

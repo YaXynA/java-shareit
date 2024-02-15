@@ -1,30 +1,41 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.user.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
+import javax.persistence.*;
 
 @Data
-@Builder
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "items")
 public class Item {
-
-    @EqualsAndHashCode.Include
-    private int id;
-
-    @NotBlank(message = "Name cannot be empty or contain spaces.")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "name", nullable = false)
     private String name;
-
-    @NotBlank(message = "Description cannot be empty or contain spaces.")
+    @Column(name = "description", nullable = false)
     private String description;
-
-    @NotNull(message = "Available cannot be empty.")
+    @Column(name = "available", nullable = false)
     private Boolean available;
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User owner;
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private ItemRequest request;
 
-    private int owner;
+    public Item(String name, String description, Boolean available) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+    }
 
 }
