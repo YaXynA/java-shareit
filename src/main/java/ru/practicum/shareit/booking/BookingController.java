@@ -55,5 +55,6 @@ public class BookingController {
                                            @RequestParam(value = "state", defaultValue = "ALL") String bookingState) {
         log.info("GET запрос на получение списка всех бронирований текущего владельца с id: {} и статусом {}", ownerId, bookingState);
         return bookingService.findAllOwner(ownerId, bookingState);
+
     }
 }
