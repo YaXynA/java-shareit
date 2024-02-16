@@ -9,6 +9,11 @@ import ru.practicum.shareit.item.dto.CommentDtoOut;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoOut;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
+import ru.practicum.shareit.constants.Constants;
+
+
+
+
 
 import javax.validation.Valid;
 import java.util.List;
@@ -18,18 +23,19 @@ import java.util.List;
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
-    public static final String USER_HEADER = "X-Sharer-User-Id";
+
+
     private final ItemServiceImpl itemService;
 
     @PostMapping
-    public ItemDtoOut add(@RequestHeader(USER_HEADER) Long userId,
+    public ItemDtoOut add(@RequestHeader(Constants.USER_HEADER) Long userId,
                           @Valid @RequestBody ItemDto itemDto) {
         log.info("POST Запрос на добавление пользователем с id = {} предмета {}", userId, itemDto.toString());
         return itemService.add(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDtoOut update(@RequestHeader(USER_HEADER) Long userId,
+    public ItemDtoOut update(@RequestHeader(Constants.USER_HEADER) Long userId,
                              @RequestBody ItemDto itemDto,
                              @PathVariable Long itemId) {
         log.info("PATCH Запрос на обновление предмета с id = {} пользователем с id = {} ", itemId, userId);
@@ -37,7 +43,7 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDtoOut findById(@RequestHeader(USER_HEADER) Long userId,
+    public ItemDtoOut findById(@RequestHeader(Constants.USER_HEADER) Long userId,
                                @PathVariable("itemId")
                                Long itemId) {
         log.info("GET Запрос на получение предмета с id = {} пользователем с id = {} ", itemId, userId);
@@ -45,20 +51,20 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDtoOut> findAll(@RequestHeader(USER_HEADER) Long userId) {
+    public List<ItemDtoOut> findAll(@RequestHeader(Constants.USER_HEADER) Long userId) {
         log.info("GET Запрос на получение предметов пользователя с id = {}", userId);
         return itemService.findAll(userId);
     }
 
     @GetMapping("/search")
-    public List<ItemDtoOut> searchItems(@RequestHeader(USER_HEADER) Long userId,
+    public List<ItemDtoOut> searchItems(@RequestHeader(Constants.USER_HEADER) Long userId,
                                         @RequestParam(name = "text") String text) {
         log.info("GET Запрос на поиск предметов c текстом = {}", text);
         return itemService.search(userId, text);
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDtoOut createComment(@RequestHeader(USER_HEADER) Long userId,
+    public CommentDtoOut createComment(@RequestHeader(Constants.USER_HEADER) Long userId,
                                        @Validated @RequestBody CommentDto commentDto,
                                        @PathVariable Long itemId) {
         log.info("POST Запрос на создание комментария id = {}", itemId);
