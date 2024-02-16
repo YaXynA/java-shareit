@@ -51,6 +51,7 @@ public class Item {
 
         return Objects.equals(id, item.id);
     }
+
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
