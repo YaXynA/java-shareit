@@ -166,22 +166,23 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Бронь не найдена.");
         }
         Booking booking = bookingById.get();
-        switch (number) {
-            case 1:
-                if (!booking.getItem().getOwner().getId().equals(userId)) {
-                    throw new NotFoundException("Пользователь не является владельцем");
-                }
-                if (!booking.getStatus().equals(BookingStatus.WAITING)) {
-                    throw new ValidationException("Бронь cо статусом WAITING");
-                }
-                return booking;
-            case 2:
-                if (!booking.getBooker().getId().equals(userId)
-                        && !booking.getItem().getOwner().getId().equals(userId)) {
-                    throw new NotFoundException("Пользователь не владелeц и не автор бронирования ");
-                }
-                return booking;
+
+        if (number == 1) {
+            if (!booking.getItem().getOwner().getId().equals(userId)) {
+                throw new NotFoundException("Пользователь не является владельцем");
+            }
+            if (!booking.getStatus().equals(BookingStatus.WAITING)) {
+                throw new ValidationException("Бронь cо статусом WAITING");
+            }
+        } else if (number == 2) {
+            if (!booking.getBooker().getId().equals(userId)
+                    && !booking.getItem().getOwner().getId().equals(userId)) {
+                throw new NotFoundException("Пользователь не владелeц и не автор бронирования");
+            }
+        } else {
+            throw new IllegalArgumentException("Недопустимое значение 'number'");
         }
-        return null;
+
+        return booking;
     }
 }
