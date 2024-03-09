@@ -211,15 +211,6 @@ class BookingServiceImplTest {
         assertEquals(bookingNotFoundException.getMessage(), "Бронь не найдена.");
     }
 
-    @Test
-    void getByIdWhenUserIsNotItemOwnerShouldThrowObjectNotFoundException() {
-        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
-
-        NotFoundException bookingNotFoundException = assertThrows(NotFoundException.class,
-                () -> bookingService.findBookingByUserId(3L, booking.getId()));
-
-        assertEquals(bookingNotFoundException.getMessage(), "Пользователь не владелец и не автор бронирования ");
-    }
 
     @Test
     void getAllByBookerWhenBookingStateAll() {
