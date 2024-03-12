@@ -10,7 +10,8 @@ import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.constants.Constants;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -48,8 +49,8 @@ public class BookingController {
     @GetMapping
     public List<BookingDtoOut> findAll(@RequestHeader(Constants.USER_HEADER) Long userId,
                                        @RequestParam(value = "state", defaultValue = "ALL") String bookingState,
-                                       @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
-                                       @RequestParam(value = "size", defaultValue = "10") @Min(1) Integer size) {
+                                       @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                                       @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
         log.info("GET запрос на получение списка всех бронирований текущего пользователя с id: {} и статусом {}", userId, bookingState);
         return bookingService.findAll(userId, bookingState, from, size);
     }
@@ -57,8 +58,8 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDtoOut> getAllOwner(@RequestHeader(Constants.USER_HEADER) Long ownerId,
                                            @RequestParam(value = "state", defaultValue = "ALL") String bookingState,
-                                           @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
-                                           @RequestParam(value = "size", defaultValue = "10") @Min(1) Integer size) {
+                                           @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                                           @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
         log.info("GET запрос на получение списка всех бронирований текущего владельца с id: {} и статусом {}", ownerId, bookingState);
         return bookingService.findAllOwner(ownerId, bookingState, from, size);
     }
