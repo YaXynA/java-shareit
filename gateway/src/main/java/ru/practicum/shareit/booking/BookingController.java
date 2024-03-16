@@ -23,7 +23,6 @@ import static ru.practicum.shareit.Constants.USER_HEADER;
 @Slf4j
 @Validated
 public class BookingController {
-
     private final BookingClient bookingClient;
 
     @GetMapping
@@ -60,6 +59,7 @@ public class BookingController {
         log.info("GET запрос на получение списка всех бронирований c state {}, userId={}, from={}, size={}", bookingState, ownerId, from, size);
         return bookingClient.getAllOwner(ownerId, state, from, size);
     }
+
     @PatchMapping("/{bookingId}")
     public ResponseEntity<Object> updateStatus(@RequestHeader(USER_HEADER) Long userId,
                                                @PathVariable("bookingId") Long bookingId,
@@ -67,5 +67,4 @@ public class BookingController {
         log.info("PATCH запрос на обновление статуса бронирования вещи : {} от владельца с id: {}", bookingId, userId);
         return bookingClient.update(userId, bookingId, approved);
     }
-
 }

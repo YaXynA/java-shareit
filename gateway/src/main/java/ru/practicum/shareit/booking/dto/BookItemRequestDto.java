@@ -8,17 +8,21 @@ import ru.practicum.shareit.booking.valid.StartBeforeEndDateValid;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @StartBeforeEndDateValid
 public class BookItemRequestDto {
     @NotNull
-    private long itemId;
+    private Long itemId;
+
     @NotNull
     @FutureOrPresent
     private LocalDateTime start;
+
     @NotNull
     @Future
     private LocalDateTime end;

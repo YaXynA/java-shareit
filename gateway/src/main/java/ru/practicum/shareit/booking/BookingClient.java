@@ -10,9 +10,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.client.BaseClient;
-
 import java.util.Map;
-
 
 @Service
 public class BookingClient extends BaseClient {
@@ -49,6 +47,7 @@ public class BookingClient extends BaseClient {
                 "size", size);
         return get("/owner?state={state}&from={from}&size={size}", ownerId, parameters);
     }
+
     public ResponseEntity<Object> update(long userId, long bookingId, Boolean approved) {
         Map<String, Object> parameters = Map.of("approved", approved);
         return patch("/" + bookingId + "?approved={approved}", userId, parameters, null);

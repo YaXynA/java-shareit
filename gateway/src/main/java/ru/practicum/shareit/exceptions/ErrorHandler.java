@@ -6,26 +6,27 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import javax.validation.ConstraintViolationException;
 
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException e) {
         log.warn("Получен статус 404 NOT_FOUND {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
+
     @ExceptionHandler({MethodArgumentNotValidException.class, ValidationException.class, ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final Exception e) {
         log.warn("Получен статус 400 BAD_REQUEST {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
-    @ExceptionHandler
+
+    @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleOtherException(final Throwable e) {
         log.warn("Получен статус 500 SERVER_ERROR {}", e.getMessage(), e);
