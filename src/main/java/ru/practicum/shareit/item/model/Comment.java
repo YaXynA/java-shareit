@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "comments", schema = "public")
 public class Comment {
@@ -19,7 +20,7 @@ public class Comment {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "text", nullable = false,length = 2048)
+    @Column(name = "text", nullable = false, length = 2048)
     private String text;
 
     @ManyToOne
