@@ -32,6 +32,7 @@ public class ItemRequestController {
     public ResponseEntity<Object> getUserRequests(@RequestHeader(USER_HEADER) Long userId) {
         return requestClient.getUserRequests(userId);
     }
+
     @GetMapping("/all")
     public ResponseEntity<Object> getAllRequests(@RequestHeader(USER_HEADER) Long userId,
                                                  @RequestParam(name = "from", defaultValue = "0") @Min(0) Integer from,
