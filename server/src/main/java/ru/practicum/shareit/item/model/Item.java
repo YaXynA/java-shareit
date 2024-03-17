@@ -5,34 +5,32 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
+import java.util.Objects;
 
-@Data
+
+@Getter
+@Setter
+@ToString
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity
 @Table(name = "items")
 public class Item {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name = "name", nullable = false)
     private String name;
-
     @Column(name = "description", nullable = false)
     private String description;
-
     @Column(name = "available", nullable = false)
     private Boolean available;
-
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private User owner;
-
     @ManyToOne
     @JoinColumn(name = "request_id")
     @ToString.Exclude
@@ -43,5 +41,20 @@ public class Item {
         this.name = name;
         this.description = description;
         this.available = available;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Item item = (Item) o;
+
+        return Objects.equals(id, item.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }
